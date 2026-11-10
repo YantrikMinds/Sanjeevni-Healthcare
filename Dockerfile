@@ -21,6 +21,9 @@ COPY backend ./backend
 # CRITICAL: Copy data directory (Required for Cohort Engine)
 COPY data ./data
 
+# CRITICAL: Copy shared directory (Required for triage_thresholds.json & safety_layer.py)
+COPY shared ./shared
+
 # Create a writable directory for the model (Hugging Face Spaces requirement)
 RUN mkdir -p /app/backend/models/weights && chmod -R 777 /app/backend/models/weights
 
