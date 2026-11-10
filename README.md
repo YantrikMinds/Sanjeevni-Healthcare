@@ -2,7 +2,31 @@
 
 ### Offline-First, Explainable AI Clinical Screening & Triage Platform for Rural Primary Care
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://sanjeevni-healthcare.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://sanjeevni-healthcare.onrender.com/docs)
+
+- **🌐 Live Web App**: https://sanjeevni-healthcare.vercel.app
+- **⚙️ Backend API & Swagger Docs**: https://sanjeevni-healthcare.onrender.com/docs
+- **🔑 Quick Demo Login**: Use the **Demo Role Quick Select** buttons on the login screen (`worker@sanjeevni.org` / `Password@123`, `doctor@phc.org` / `Password@123`, or `admin@hospital.org` / `password123`).
+  *(Note: Backend runs on Render's free tier and may take ~30–50 seconds to wake up on the first request after inactivity.)*
+
 > **⚠️ Research Prototype Disclaimer**: Sanjeevni Healthcarer is an investigational research prototype designed to assist rural Community Health Workers (**ASHA-style workers**) and Primary Health Centre (**PHC**) doctors during community screening visits. It is **not** a diagnostic medical device, never prescribes medication, and must **never** replace clinical examination by a qualified physician. In medical emergencies, dial **112** or **Tele-MANAS 14416**.
+
+---
+
+## 📸 Platform Screenshots
+
+| Login & Bilingual Role Quick-Select (`EN / हिन्दी`) | 5-Minute Guided Doorstep Visit (with No-Lab Toggle) |
+|---|---|
+| ![Login & Role Quick-Select](docs/screenshots/01-login.jpg) | ![5-Minute Guided Doorstep Visit](docs/screenshots/02-guided-visit.jpg) |
+
+| PHC Doctor Clinical Triage Queue (`RED -> YELLOW -> GREEN`) | PHQ-9 Mental Health Screening |
+|---|---|
+| ![PHC Doctor Clinical Triage Queue](docs/screenshots/03-phc-triage-dashboard.jpg) | ![PHQ-9 Mental Health Screening](docs/screenshots/04-mental-health-phq9.jpg) |
+
+| Model Governance, Calibration & Fairness Card |
+|---|
+| ![Model Governance & Fairness Card](docs/screenshots/05-model-card-fairness.jpg) |
 
 ---
 
