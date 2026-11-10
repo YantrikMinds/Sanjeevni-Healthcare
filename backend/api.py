@@ -39,22 +39,41 @@ from fastapi.responses import StreamingResponse
 
 app = FastAPI(title="Sanjeevni Healthcarer API", version="1.0")
 
+
+@app.on_event("startup")
+def on_startup() -> None:
+    """Create DB tables and seed demo users on first boot."""
+    from backend.database import Base, engine, SessionLocal
+    from backend.models import user as _user_mod, audit as _audit_mod, visit as _visit_mod, history as _hist_mod  # noqa: F401 – registers ORM models
+    Base.metadata.create_all(bind=engine)
+
+    # Auto-seed demo users when APP_ENV=development (safe – skips if already exist)
+    if os.getenv("APP_ENV", "development").lower() == "development":
+        try:
+            import sys as _sys
+            _sys.path.insert(0, os.getcwd())
+            from scripts.seed_users import seed
+            seed()
+            app_logger.info("Demo users seeded successfully.")
+        except Exception as _e:
+            app_logger.warning(f"Demo user seed skipped (may already exist): {_e}")
+
 # Mount PDF directory
 pdf_dir = os.path.join(os.getcwd(), "backend", "pdfs")
 os.makedirs(pdf_dir, exist_ok=True)
 app.mount("/pdfs", StaticFiles(directory=pdf_dir), name="pdfs")
 
 # 1. CORS Setup from Environment Variables
-allowed_origins_env = os.getenv(
-    "ALLOWED_ORIGINS", 
-    "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://localhost:8001,http://127.0.0.1:8001"
-)
-allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+# If wildcard, use allow_origins=["*"] with allow_credentials=False
+# If specific origins listed, allow_credentials=True (required for cookies/auth headers)
+_wildcard = allowed_origins_env.strip() == "*"
+allowed_origins = ["*"] if _wildcard else [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_credentials=not _wildcard,
     allow_methods=["*"],
     allow_headers=["*"],
 )

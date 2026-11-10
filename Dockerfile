@@ -30,7 +30,6 @@ RUN mkdir -p /app/backend/models/weights && chmod -R 777 /app/backend/models/wei
 # Expose the port
 EXPOSE 8001
 
-# Run with Gunicorn for production-grade concurrency
-# Workers: 2 (Fit in 16GB/vCPU limits usually)
-# Timeout: 120s (For LLM)
-CMD ["gunicorn", "backend.api:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--timeout", "120"]
+# Run with Gunicorn — 1 worker on free tier (512MB RAM, ML models loaded)
+# Timeout: 120s for LLM/SHAP inference
+CMD ["gunicorn", "backend.api:app", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--timeout", "120"]
