@@ -50,13 +50,23 @@ def on_startup() -> None:
     # Auto-seed demo users when APP_ENV=development (safe – skips if already exist)
     if os.getenv("APP_ENV", "development").lower() == "development":
         try:
-            import sys as _sys
-            _sys.path.insert(0, os.getcwd())
-            from scripts.seed_users import seed
-            seed()
+            from backend.database import SessionLocal
+            from backend.models.user import User
+            from backend.auth import get_password_hash
+            db = SessionLocal()
+            demo_users = [
+                {"email": "worker@sanjeevni.org", "password": os.getenv("SEED_WORKER_PASSWORD", "Password@123"), "name": "ASHA Worker Demo", "role": "worker"},
+                {"email": "doctor@phc.org",       "password": os.getenv("SEED_DOCTOR_PASSWORD", "Password@123"), "name": "PHC Doctor Demo",  "role": "doctor"},
+                {"email": "admin@hospital.org",   "password": os.getenv("SEED_ADMIN_PASSWORD",  "password123"),  "name": "Admin Demo",        "role": "admin"},
+            ]
+            for u in demo_users:
+                if not db.query(User).filter(User.email == u["email"]).first():
+                    db.add(User(email=u["email"], hashed_password=get_password_hash(u["password"]), name=u["name"], role=u["role"]))
+            db.commit()
+            db.close()
             app_logger.info("Demo users seeded successfully.")
         except Exception as _e:
-            app_logger.warning(f"Demo user seed skipped (may already exist): {_e}")
+            app_logger.warning(f"Demo user seed skipped: {_e}")
 
 # Mount PDF directory
 pdf_dir = os.path.join(os.getcwd(), "backend", "pdfs")
