@@ -1,5 +1,5 @@
-# Use Python 3.9-slim for compatibility and size
-FROM python:3.9-slim
+# Use Python 3.12-slim for compatibility and size
+FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
@@ -18,15 +18,18 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the backend code into /app/backend to maintain package structure
 COPY backend ./backend
 
+# CRITICAL: Copy data directory (Required for Cohort Engine)
+COPY data ./data
+
 # Create a writable directory for the model (Hugging Face Spaces requirement)
 RUN mkdir -p /app/backend/models/weights && chmod -R 777 /app/backend/models/weights
 
-# Expose the port Hugging Face Spaces expects (7860)
-EXPOSE 7860
+# Expose the port
+EXPOSE 8001
 
 # Run the application
 # We run from /app so 'backend.api' is resolved correctly
 # Run with Gunicorn for better concurrency
 # Workers: 2 (Balance between concurrency and RAM usage for 4GB model)
 # Timeout: 120s (Generous for slow LLM inference)
-CMD ["gunicorn", "backend.api:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:7860", "--timeout", "120"]
+CMD ["gunicorn", "backend.api:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--timeout", "120"]

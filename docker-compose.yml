@@ -6,18 +6,20 @@ services:
       context: .
       dockerfile: docker/backend.Dockerfile
     ports:
-      - "7860:7860"
+      - "8001:8001"
     volumes:
       - ./backend/models/weights:/app/backend/models/weights
     environment:
-      - PORT=7860
+      - PORT=8001
+      - APP_ENV=development
+      - SECRET_KEY=dev-insecure-secret-key-change-in-production
 
   frontend:
     build:
       context: .
       dockerfile: docker/frontend.Dockerfile
       args:
-        - VITE_API_URL=http://localhost:7860
+        - VITE_API_URL=http://localhost:8001
     ports:
       - "3000:80"
     depends_on:

@@ -1,8 +1,8 @@
 # Build Stage
-FROM node:18-alpine as build
+FROM node:22-alpine as build
 WORKDIR /app
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY frontend/ .
 # Inject VITE_API_URL during build (or expect it at runtime if using a specific server)
 # For static builds, env vars must be present at build time

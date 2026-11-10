@@ -1,5 +1,5 @@
-# Use Python 3.9-slim for compatibility and size
-FROM python:3.9-slim
+# Use Python 3.12-slim for compatibility and size
+FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
@@ -25,9 +25,9 @@ COPY data ./data
 RUN mkdir -p /app/backend/models/weights && chmod -R 777 /app/backend/models/weights
 
 # Expose the port
-EXPOSE 7860
+EXPOSE 8001
 
 # Run with Gunicorn for production-grade concurrency
 # Workers: 2 (Fit in 16GB/vCPU limits usually)
 # Timeout: 120s (For LLM)
-CMD ["gunicorn", "backend.api:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:7860", "--timeout", "120"]
+CMD ["gunicorn", "backend.api:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--timeout", "120"]
